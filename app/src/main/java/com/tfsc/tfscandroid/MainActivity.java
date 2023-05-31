@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static String DEMO_TO_ADDR = "1HEUuLH5Zd6Borfu2TccQnEXSBKCEQTBKu";
     private static String TRANS_AMOUNT = "1";
 
-    private static String BASE_URL = "http://192.168.1.42:41517";  //RPC node built by yourself
+    private static String BASE_URL = "http://192.168.1.42:11190";  //RPC node built by yourself
 
 
     @Override
@@ -62,13 +62,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.d(TAG, getString(R.string.demo_import_account_mnemonics) + ":" + gson.toJson(wallet4Android.importMnemonicKey(DEMO_MNEMONIC)));
         } else if (viewId == R.id.demo_get_balance) {
             BalanceReq balanceReq = new BalanceReq();
-            BalanceReq.Addr addr = new BalanceReq.Addr();
-            addr.setAddress(DEMO_FROM_ADDR);
-            balanceReq.setParams(addr);
+            balanceReq.setType("get_balance");
+            balanceReq.setAddr(DEMO_FROM_ADDR);
             OkHttpClient client = new OkHttpClient();
             RequestBody body = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(balanceReq));
             Request request = new Request.Builder()
-                    .url(BASE_URL)
+                    .url(BASE_URL+"/get_balance")
                     .post(body)
                     .build();
             client.newCall(request).enqueue(new Callback() {
@@ -81,15 +80,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     Log.d(TAG, "response: " + response.body().string());
-                    /**The "balance" field divided by 100000000 is the balance
-                     * {
-                     *         "id": "1",
-                     *         "jsonrpc": "2.0",
-                     *         "result": {
-                     *             "balance": 10000000000
-                     *         }
-                     *     }
-                     */
+                    /*The "balance" field divided by 100000000 is the balance
+                     {
+                     "ErrorCode": "",
+                     "ErrorMessage": "",
+                     "addr": "",
+                     "balance": "3000114097515400",
+                     "type": ""
+                     }*/
+
                 }
             });
 
